@@ -10,7 +10,6 @@ import (
 
 	"github.com/centrifugal/centrifugo/v6/internal/api"
 	"github.com/centrifugal/centrifugo/v6/internal/configtypes"
-	"github.com/centrifugal/centrifugo/v6/internal/logging"
 	"github.com/centrifugal/centrifugo/v6/internal/redisqueue"
 	"github.com/centrifugal/centrifugo/v6/internal/redisshard"
 
@@ -85,10 +84,10 @@ func NewRedisStreamConsumer(
 
 // process is the ConsumerFunc for redisqueue.Consumer.
 func (c *RedisStreamConsumer) process(msg *redisqueue.Message) error {
-	if logging.Enabled(logging.DebugLevel) {
-		c.common.log.Debug().Str("stream", msg.ID).
-			Msg("received message from stream")
-	}
+	// if logging.Enabled(logging.DebugLevel) {
+	c.common.log.Warn().Str("stream", msg.ID).
+		Msg("received message from stream")
+	// }
 	dataStr, ok := msg.Values[c.config.PayloadValue]
 	if !ok {
 		c.common.log.Error().
@@ -96,6 +95,8 @@ func (c *RedisStreamConsumer) process(msg *redisqueue.Message) error {
 			Msg("payload value not found in redis stream message")
 		return nil
 	}
+
+	fmt.Println("process redis stream mes fdassage", msg)
 
 	ctx := context.Background()
 	var err error

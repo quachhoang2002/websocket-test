@@ -117,6 +117,8 @@ func NewConsumer(shard *redisshard.RedisShard, options ConsumerOptions) (*Consum
 
 		shard: shard,
 	}
+
+	fmt.Println("create consumer group", c.options.Stream, c.options.GroupName)
 	err := CreateConsumerGroup(c.shard, c.options.Stream, c.options.GroupName, "$")
 	if err != nil && !strings.Contains(err.Error(), "BUSYGROUP") {
 		return nil, fmt.Errorf("error creating consumer group: %w", err)
@@ -135,6 +137,7 @@ func (c *Consumer) Options() ConsumerOptions {
 // creating the consumer group in Redis. Run will block until Shutdown is called
 // and all the in-flight messages have been processed.
 func (c *Consumer) Run() {
+	fmt.Println("run redis stream consumer", c.options.Stream)
 	if c.options.UseLegacyReclaim {
 		go c.reclaimLegacy(c.options.Stream)
 	} else {
@@ -473,6 +476,7 @@ func (c *Consumer) work() {
 				cmd := client.B().Xack().Key(c.options.Stream).Group(c.options.GroupName).Id(msg.ID).Build()
 				return client.Do(context.Background(), cmd)
 			}).Error()
+			fmt.Println("acknowledge message", msg.ID)
 			if err != nil {
 				c.logError(fmt.Errorf("error acknowledging message for %q stream and %q message: %w", c.options.Stream, msg.ID, err))
 				continue
@@ -490,6 +494,9 @@ func (c *Consumer) process(msg *Message) (err error) {
 		c.cond.Broadcast()
 		c.cond.L.Unlock()
 	}()
+
+	fmt.Println("process redis stream message", msg)
+
 	err = c.options.ConsumerFunc(msg)
 	return
 }

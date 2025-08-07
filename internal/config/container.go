@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 	"sync/atomic"
@@ -77,6 +78,8 @@ func buildCompiledRegexes(config Config) (Config, error) {
 		ns.Compiled.CompiledChannelRegex = p
 		namespaces = append(namespaces, ns)
 	}
+
+	fmt.Println("namespaces 12312", namespaces)
 	config.Channel.Namespaces = namespaces
 	return config, nil
 }

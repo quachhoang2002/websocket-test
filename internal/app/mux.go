@@ -165,7 +165,7 @@ func Mux(
 	}
 
 	if flags&HandlerWebtransport != 0 {
-		// register WebTransport connection endpoint.
+		// register WebTransport connrun redis stream consumer conversation_streamection endpoint.
 		wtPrefix := strings.TrimRight(cfg.WebTransport.HandlerPrefix, "/")
 		if wtPrefix == "" {
 			wtPrefix = "/"

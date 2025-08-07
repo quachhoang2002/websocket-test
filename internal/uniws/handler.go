@@ -2,6 +2,7 @@ package uniws
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"sync"
 	"time"
@@ -180,6 +181,7 @@ func (s *Handler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		c.Connect(connectRequest)
 
 		for {
+			fmt.Println("read message aaa")
 			_, _, err := conn.ReadMessage()
 			if err != nil {
 				break

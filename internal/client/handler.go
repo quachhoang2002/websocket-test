@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"unicode"
 
 	"github.com/centrifugal/centrifugo/v6/internal/clientcontext"
@@ -226,6 +227,7 @@ func (h *Handler) Setup() error {
 
 		client.OnHistory(func(event centrifuge.HistoryEvent, cb centrifuge.HistoryCallback) {
 			h.runConcurrentlyIfNeeded(client.Context(), concurrency, semaphore, func() {
+				fmt.Println("history 123123", event)
 				reply, err := h.OnHistory(client, event)
 				cb(reply, err)
 			})
@@ -650,6 +652,7 @@ func (h *Handler) OnSubscribe(c Client, e centrifuge.SubscribeEvent, subscribePr
 	if err = h.validateChannelName(c, rest, chOpts, e.Channel); err != nil {
 		return centrifuge.SubscribeReply{}, SubscribeExtra{}, err
 	}
+	fmt.Println("channel 123123", e.Channel, "user 123123", c.UserID())
 
 	var allowed bool
 

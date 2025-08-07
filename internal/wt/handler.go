@@ -2,6 +2,7 @@ package wt
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -21,7 +22,7 @@ type Handler struct {
 	pingPong centrifuge.PingPongConfig
 }
 
-// NewHandler creates new Handler.
+// Ne wHandler creates new Handler.
 func NewHandler(node *centrifuge.Node, wtServer *webtransport.Server, config Config, pingPong centrifuge.PingPongConfig) *Handler {
 	return &Handler{config: config, server: wtServer, node: node, pingPong: pingPong}
 }
@@ -78,6 +79,7 @@ func (s *Handler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	for {
+		fmt.Println("decode message")
 		cmd, cmdSize, err := decoder.Decode()
 		if err != nil {
 			log.Error().Err(err).Str("transport", transportName).Str("client", c.ID()).Msg("error decoding command")

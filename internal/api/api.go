@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -420,6 +421,7 @@ func (h *Executor) Subscribe(_ context.Context, cmd *SubscribeRequest) *Subscrib
 		resp.Error = ErrorInternal
 		return resp
 	}
+	fmt.Println("subscribe 123123", user, channel)
 	resp.Result = &SubscribeResult{}
 	return resp
 }
